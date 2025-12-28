@@ -1,0 +1,22 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Blob Storage Demo";
+}
+
+<h2>Blob Storage Demo</h2>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+</form>
+
+<h3>Files in Blob Storage:</h3>
+<ul>
+    @foreach (var blob in Model)
+    {
+        <li>
+            @blob
+            <a asp-action="Download" asp-route-name="@blob">Download</a>
+        </li>
+    }
+</ul>

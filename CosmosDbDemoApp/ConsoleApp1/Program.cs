@@ -1,5 +1,6 @@
 ﻿using ConsoleApp1;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Scripts;
 using Microsoft.Extensions.Configuration;
 
 var builder = new ConfigurationBuilder()
@@ -18,7 +19,7 @@ CosmosClient cosmosClient = new(strCosmosEndpoint, strCosmosPrimaryKey);
 Database db = cosmosClient.GetDatabase(strCosmosDbname);
 
 Container container = db.GetContainer("items");
-
+/*
 ItemModel item = new ItemModel
 {
     Name = "Laptop",
@@ -64,8 +65,6 @@ while (result.HasMoreResults)
         Console.WriteLine($"Found: {doc.Name} ({doc.Quantity})");
 }
 
-Console.ReadLine();
-
 readItem.Resource.Quantity = 10;
 
 await container.UpsertItemAsync(readItem.Resource, new PartitionKey(readItem.Resource.Id));
@@ -75,6 +74,33 @@ Console.WriteLine("Item updated");
 await container.DeleteItemAsync<ItemModel>(readItem.Resource.Id, new PartitionKey(readItem.Resource.Id));
 
 Console.WriteLine("Item deleted");
+
+
+
+StoredProcedureExecuteResponse<string> spRes = await container.Scripts.ExecuteStoredProcedureAsync<string>(
+    "helloWorld",
+    new PartitionKey("laptop"),
+    new dynamic[] { });
+
+
+Console.WriteLine("helloWorld res : " + spRes.Resource);
+
+Console.ReadLine();
+*/
+var itemsArray = new[]
+{
+    new { id = "1", name = "Laptop", qty = 5 },
+    new { id = "2", name = "Mouse", qty = 10 }
+};
+
+var spResult = await container.Scripts.ExecuteStoredProcedureAsync<dynamic>(
+    "sample",
+    new PartitionKey("electronics"),   // must match the partition
+    new object[] { itemsArray }
+);
+
+
+Console.WriteLine("Sample res : " + spResult.Resource);
 
 
 Console.ReadLine();
