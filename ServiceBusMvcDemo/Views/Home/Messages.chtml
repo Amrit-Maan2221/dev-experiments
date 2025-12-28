@@ -1,0 +1,10 @@
+<h2>Received Messages</h2>
+
+<ul>
+@foreach (var msg in Model)
+{
+    <li>@msg</li>
+}
+</ul>
+
+<a asp-action="Index">Back</a>
