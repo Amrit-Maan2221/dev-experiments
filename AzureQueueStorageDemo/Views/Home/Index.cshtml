@@ -1,0 +1,30 @@
+﻿@model List<string>
+
+<h2>Azure Queue Demo</h2>
+
+<form method="post" asp-action="Send">
+    <input type="text" name="text" placeholder="Enter message" />
+    <button type="submit">Send Message</button>
+</form>
+
+<br />
+
+<form method="post" asp-action="Receive">
+    <button type="submit">Receive & Delete Message</button>
+</form>
+
+@if (TempData["Received"] != null)
+{
+    <p><strong>Dequeued Message:</strong> @TempData["Received"]</p>
+}
+
+<hr />
+
+<h3>Messages in Queue (Peek)</h3>
+
+<ul>
+@foreach (var msg in Model)
+{
+    <li>@msg</li>
+}
+</ul>
