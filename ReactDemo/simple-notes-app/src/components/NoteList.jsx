@@ -1,9 +1,11 @@
 import Note from "./Note";
 
-function NoteList() {
+function NoteList({ notes }) {
   return (
     <div>
-      <Note text="Learn React" date="Today" />
+      {notes.map((note, index) => (
+        <Note key={index} text={note} />
+      ))}
     </div>
   );
 }

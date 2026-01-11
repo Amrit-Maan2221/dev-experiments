@@ -1,9 +1,7 @@
-function Note({ text, date }) {
-  text = "Changed";
+function Note({ text }) {
   return (
     <div>
       <p>{text}</p>
-      <small>{date}</small>
     </div>
   );
 }
