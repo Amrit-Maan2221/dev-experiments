@@ -49,29 +49,29 @@ public class HomeController : Controller
     }
 
     public async Task SendMessageAsync(string message)
-        {
-            await using var client = new ServiceBusClient(_connectionString);
-            var sender = client.CreateSender(_queueName);
+    {
+        await using var client = new ServiceBusClient(_connectionString);
+        var sender = client.CreateSender(_queueName);
 
-            var busMessage = new ServiceBusMessage(message);
-            await sender.SendMessageAsync(busMessage);
+        var busMessage = new ServiceBusMessage(message);
+        await sender.SendMessageAsync(busMessage);
+    }
+
+    public async Task<List<string>> ReceiveMessagesAsync()
+    {
+        var messages = new List<string>();
+
+        await using var client = new ServiceBusClient(_connectionString);
+        var receiver = client.CreateReceiver(_queueName);
+
+        var received = await receiver.ReceiveMessagesAsync(maxMessages: 5);
+
+        foreach (var msg in received)
+        {
+            messages.Add(msg.Body.ToString());
+            await receiver.CompleteMessageAsync(msg); // Remove from queue
         }
 
-        public async Task<List<string>> ReceiveMessagesAsync()
-        {
-            var messages = new List<string>();
-
-            await using var client = new ServiceBusClient(_connectionString);
-            var receiver = client.CreateReceiver(_queueName);
-
-            var received = await receiver.ReceiveMessagesAsync(maxMessages: 5);
-
-            foreach (var msg in received)
-            {
-                messages.Add(msg.Body.ToString());
-                await receiver.CompleteMessageAsync(msg); // Remove from queue
-            }
-
-            return messages;
-        }
+        return messages;
+    }
 }
